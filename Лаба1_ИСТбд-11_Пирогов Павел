@@ -21,7 +21,6 @@ with open('тест для аисд 11.txt') as f:
                     print(i, "число не восьмиричное")
                 else:
                     print(i)
-                    #ЦИФРЫ==БУКВЫ
                     x = str(i)[::-1]
                     x = int(x)
                     output = False
