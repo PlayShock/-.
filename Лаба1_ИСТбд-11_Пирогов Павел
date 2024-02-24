@@ -9,7 +9,7 @@ for i in range(32, 48):
 for i in range(58, 128):
     alp.append(chr(i))
                     #print(alp)
-alpp = ','.join(alp)
+alpp = ''.join(alp)
                     #print(alpp)
 book = {1: 'один', 2: 'два', 3: 'три', 4: 'четыре', 5: 'опять', 6: 'шесть', 7: 'семь', 8: 'восемь', 9: 'девять', 0: 'нуль'}
 
