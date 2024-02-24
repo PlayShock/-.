@@ -1,6 +1,6 @@
 #Восьмиричные числа не превышающие 409610. Выводит на экран нечетные числа, содержащие четное количество цифр, превышающее К.
 #Список используемых цифр выводится отдельно прописью.
-#Вариант 23_Пирогов Павел_ИСтбд-11
+#Вариант 24.
 
 #АЛФАВИТ_СИМВОЛОВ_И_ЦИФРЫ==СЛОВА
 alp = []
@@ -13,25 +13,29 @@ alpp = ''.join(alp)
                     #print(alpp)
 book = {1: 'один', 2: 'два', 3: 'три', 4: 'четыре', 5: 'опять', 6: 'шесть', 7: 'семь', 8: 'восемь', 9: 'девять', 0: 'нуль'}
 
-#СОЗДАНИЕ_СПИСКА
-s = []
-with open('тест для аисд 11.txt') as f:
-    for line in f:
-        for dell in alpp:
-            line = line.replace(dell, ' ')
-        s_num = map(int, line.split())
-        s.extend(s_num)
-print(s)
-
-#ОСНОВНАЯ_ПРОГРАММА
+#СОЗДАНИЕ_СПИСКА_и_ОСНОВНАЯ_ПРОГРАММА
 k = int(input('k = '))
-for i in range(len(s)):
-    if s[i] > k and s[i] % 2 != 0 and len(str((s[i]))) % 2 == 0:
-        print(s[i])
-        #ЦИФРЫ==БУКВЫ
-        x = str(s[i])[::-1]
-        x = int(x)
-        while x > 0:
-            #print(x)
-            print(book[int(x) % 10])
-            x //= 10
+with open('тест для аисд 11.txt') as f:
+    while True:
+        block = f.read(1024)
+        if not block:
+            break
+        f.seek(0)
+        s = []
+
+        for line in f:
+            for dell in alpp:
+                line = line.replace(dell, ' ')
+            s_num = map(int, line.split())
+            s.extend(s_num)
+            print(s)
+            for i in range(len(s)):
+                if s[i] > k and s[i] % 2 != 0 and len(str((s[i]))) % 2 == 0:
+                    print(s[i])
+                    #ЦИФРЫ==БУКВЫ
+                    x = str(s[i])[::-1]
+                    x = int(x)
+                    while x > 0:
+                        #print(x)
+                        print(book[int(x) % 10])
+                        x //= 10
