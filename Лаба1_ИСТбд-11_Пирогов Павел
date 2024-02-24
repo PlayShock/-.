@@ -12,8 +12,12 @@ with open('тест для аисд 11.txt') as f:
             break
         s = []
         for line in block.splitlines():
-            for s_num in map(int, line.split()):
-                s.append(str(s_num))
+            for s_num in line.split():
+                try:
+                    num = int(s_num)
+                    s.append(str(num))
+                except ValueError:
+                    print('в числе есть буква:', s_num)
         print(s)
         for i in s:
             if int(i) > k and int(i) % 2 != 0 and len(str((i))) % 2 == 0:
@@ -21,6 +25,7 @@ with open('тест для аисд 11.txt') as f:
                     print(i, "число не восьмиричное")
                 else:
                     print(i)
+                    #ЦИФРЫ==БУКВЫ
                     x = str(i)[::-1]
                     x = int(x)
                     output = False
