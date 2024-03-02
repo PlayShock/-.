@@ -1,37 +1,32 @@
 #Восьмиричные числа не превышающие 409610. Выводит на экран нечетные числа, содержащие четное количество цифр, превышающее К.
 #Список используемых цифр выводится отдельно прописью.
 #Вариант23_Пирогов Павел_ИСТбд-11
+
 import re
 book = {1: 'один', 2: 'два', 3: 'три', 4: 'четыре', 5: 'опять', 6: 'шесть', 7: 'семь', 0: 'нуль'}
 
 k = int(input('k = '))
 with open('text.txt') as f:
-    while True:
-        block = f.read(1024)
-        if not block:
-            break
+    for line in f:
         s = []
-        numbers = re.findall(r'\b\d+\b', block)
-        for line in block.splitlines():
-            for s_num in line.split():
-                try:
-                    num = int(s_num)
-                    s.append(str(num))
-                except ValueError:
-                    print('В ЧИСЛЕ ЕСТЬ БУКВА:', s_num)
+        numbers = re.findall(r'\b\d+\b', line)
+        for s_num in numbers:
+            s.append(str(s_num))
         print(s)
         for i in s:
-            if int(i) > k and int(i) % 2 != 0 and len(str((i))) % 2 == 0:
-                if '8' in i or '9' in i:
-                    print(i+" - ЧИСЛО НЕ ВОСЬМИРИЧНОЕ")
-                else:
-                    print(i)
-                    #ЦИФРЫ==БУКВЫ
-                    x = str(i)[::-1]
-                    x = int(x)
-                    output = False
-                    v = []
-                    while x > 0:
-                        v.append(book[int(x) % 10])
-                        x //= 10
-                    print(' '.join(v))
+            try:
+                if int(i) > k and int(i) % 2 != 0 and len(str(i)) % 2 == 0:
+                    if '8' in i or '9' in i:
+                        print(i + "- ЧИСЛО НЕ ВОСЬМИРИЧНОЕ")
+                    else:
+                        print(i)
+                        x = str(i)[::-1]
+                        x = int(x)
+                        output = False
+                        v = []
+                        while x > 0:
+                            v.append(book[int(x) % 10])
+                            x //= 10
+                        print(' '.join(v))
+            except ValueError:
+                pass
