@@ -9,9 +9,11 @@ k = int(input('k = '))
 with open('text.txt') as f:
     for line in f:
         s = []
-        numbers = re.findall(r'\b\d+\b', line)
-        for s_num in numbers:
-            s.append(str(s_num))
+        sll = line.split()
+        for sl in sll:
+            numbers = re.findall(r'\b\d+\b', sl)
+            for s_num in numbers:
+                s.append(str(s_num))
         print(s)
         for i in s:
             try:
