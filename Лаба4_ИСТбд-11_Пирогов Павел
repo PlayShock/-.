@@ -1,0 +1,83 @@
+# Формируется матрица F следующим образом: скопировать в нее А и  если в Е сумма чисел, больших К в нечетных столбцах больше,
+# чем произведение чисел по периметру, то поменять местами С и Е симметрично, иначе С и В поменять местами несимметрично.
+# При этом матрица А не меняется. После чего если определитель матрицы А больше суммы диагональных элементов матрицы F, то вычисляется
+# выражение: A*A-1 – K * F-1, иначе вычисляется выражение (AТ +G-FТ)*K, где G-нижняя треугольная матрица, полученная из А.
+# Выводятся по мере формирования А, F и все матричные операции последовательно.
+#Вариант23_Пирогов Павел_ИСТбд-11
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+N, K = map(int, input('Введите N и K(через пробел):').split())
+
+A = np.random.randint(-10, 10, (N, N))
+
+print('Матрица A')
+print(A)
+B, C, D, E = A.reshape(N//(N//2), N//2, -1, N//2).swapaxes(1, 2).reshape(-1, N//2, N//2)
+# print(B)
+# print(C)
+# print(D)
+# print(E)
+
+fig, ((ax, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(8, 6))
+
+ax.set_title("Матрица B")
+for i in range(len(B)):
+    for j in range(len(B)):
+        text = ax.text(j, i, B[i, j],
+                       ha="center", va="center", color="w")
+im = ax.imshow(B, cmap="cool")
+
+ax2.set_title("Матрица C")
+for i in range(len(C)):
+    for j in range(len(C)):
+        text = ax2.text(j, i, C[i, j],
+                       ha="center", va="center", color="w")
+im = ax2.imshow(C, cmap="gist_heat")
+
+ax3.set_title("Матрица D")
+for i in range(len(D)):
+    for j in range(len(D)):
+        text = ax3.text(j, i, D[i, j],
+                       ha="center", va="center", color="w")
+im = ax3.imshow(D, cmap="summer")
+
+ax4.set_title("Матрица E")
+for i in range(len(E)):
+    for j in range(len(E)):
+        text = ax4.text(j, i, E[i, j],
+                       ha="center", va="center", color="w")
+im = ax4.imshow(E, cmap="spring")
+
+plt.show()
+
+
+F = A
+
+if np.sum(E[:,0::2][np.nonzero(E[:,0::2] > K)]) > np.prod(np.delete(np.array(list(E[0, :-1]) + list(E[:-1, -1]) + list(E[-1, :0:-1]) + list(E[::-1, 0])), -1)):
+    F = np.concatenate((np.concatenate((B, np.flipud(E)), axis=1), np.concatenate((D, np.flipud(C)), axis=1)))
+else:
+    F = np.concatenate((np.concatenate((C, B), axis=1), np.concatenate((D, E), axis=1)))
+print('матрица F')
+print(F)
+
+fig, ax = plt.subplots()
+ax.set_title("Матрица F")
+for i in range(len(F)):
+    for j in range(len(F)):
+        text = ax.text(j, i, F[i, j],
+                       ha="center", va="center", color="w")
+im = ax.imshow(F)
+plt.show()
+
+
+if np.linalg.det(A) > (F.diagonal().sum() + np.fliplr(F).diagonal().sum()):
+    print('A*A^(-1) – K * F^(-1) = ')
+    print(np.subtract(np.matmul(A, np.linalg.inv(A)), np.multiply(K, np.linalg.inv(F))))
+else:
+    print('(A^Т +G-F^Т)*K')
+    print(np.multiply((np.subtract(np.add(np.matrix.transpose(A), np.tril(A)), np.matrix.transpose(F))), K))
+
+
+
