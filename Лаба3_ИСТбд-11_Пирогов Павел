@@ -5,12 +5,9 @@
 
 import random
 
-
-# Вывод матрицы
 def print_matrix(A):
     for i in A:
         print(i)
-
 
 n, k = int(input('n =')), int(input('k ='))
 
@@ -19,68 +16,45 @@ A = []
 for i in range(n):
     row = []
     for j in range(n):
-        row.append(random.randint(-10,10))
+        row.append(random.randint(-10, 10))
     A.append(row)
 print('Матрица А:')
 print_matrix(A)
 
-# Создание подматриц B C D E
-B, C, D, E = [], [], [], []
-for i in A[:len(A)//2]:
-    row = i
-    for _ in row:
-        B.append(row[:len(row)//2])
-        break
+# Создание подматриц B, C, D, E
+B = [row[:n//2] for row in A[:n//2]]  # Область 1
+C = [row[n//2:] for row in A[:n//2]]  # Область 2
+D = [row[:n//2] for row in A[n//2:]]  # Область 3
+E = [row[n//2:] for row in A[n//2:]]  # Область 4
 print('Матрица B:')
 print_matrix(B)
-
-for i in A[:len(A)//2]:
-    row = i
-    for _ in row:
-        C.append(row[len(row)//2:])
-        break
 print('Матрица C:')
 print_matrix(C)
-
-for i in A[len(A)//2:]:
-    row = i
-    for _ in row:
-        D.append(row[:len(row)//2])
-        break
 print('Матрица D:')
 print_matrix(D)
-
-for i in A[len(A)//2:]:
-    row = i
-    for _ in row:
-        E.append(row[len(row)//2:])
-        break
 print('Матрица E:')
 print_matrix(E)
 
 # Условие для матрицы F
-if sum([E[i][j] > k for i in range(n//2) for j in range(n//2) if j % 2 == 1]) > (E[0][n//4] * 2 + sum(E[i][n//2 - 1] for i in range(1, n//4)) * 2):
-    for i in range(n//4):
-        for j in range(n//4):
-            E[i][j], E[n//4+i][n//4+j] = E[n//4+i][n//4+j], E[i][j]
+sum_area_3 = sum([E[i][j] for i in range(n//2) for j in range(n//2) if j % 2 == 1 and E[i][j] > k])  # Область 3
+perimeter_area_2 = sum(E[0]) + sum(E[i][n//2-1] for i in range(1, n//2)) + sum(E[n//2-1]) + sum(E[i][0] for i in range(1, n//2))  # Область 2
+if sum_area_3 > perimeter_area_2:
+    E, A = A, E
 else:
-    C, B = B, C
+    B, C = C, B
 
 # Создание матрицы F
 F = [[0 for j in range(n)] for i in range(n)]
-for i in range(n//2):
-    for j in range(n//2):
-        F[i][j] = B[i][j]
-        F[i][n//2+j] = C[i][j]
-        F[n//2+i][j] = D[i][j]
-        F[n//2+i][n//2+j] = E[i][j]
-print('F')
+for i in range(n//4):
+    for j in range(n//4):
+        F[i][j] = A[i][j]  # Область 1
+        F[i][n//4+j] = B[i][j]  # Область 2
+        F[n//4+i][j] = C[i][j]  # Область 3
+        F[n//4+i][n//4+j] = D[i][j]  # Область 4
+print('Матрица F:')
 print_matrix(F)
 
-# Выражение ((К*A)*F+ K* F T
-kA = [[k*A[i][j] for j in range(n)] for i in range(n)]
-kAF = [[sum([F[j][k]*kA[k][i] for k in range(n)]) for i in range(n)] for j in range(n)]
-kFT = [[sum([F[j][k]*kA[k][i] for k in range(n)]) for i in range(n)] for j in range(n)]
-result = [[kAF[i][j] + kFT[i][j] for j in range(n)] for i in range(n)]
-print('Выражение ((К*A)*F+ K* F T')
-print_matrix(result)
+# Выражение ((К*A)*F + K*F^T)
+kF = [[F[j][k]*k + F[k][j]*k for k in range(n)] for j in range(n)]
+print('Выражение ((К*A)*F + K*F^T):')
+print_matrix(kF)
