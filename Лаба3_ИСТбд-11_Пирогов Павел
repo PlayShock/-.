@@ -9,6 +9,12 @@ def print_matrix(A):
     for i in A:
         print(i)
 
+def swap_areas(matrix):
+    for i in range(len(matrix)//2):
+        for j in range(i+1,len(matrix)-(i+1)):
+            matrix[i][j] , matrix[len(matrix)-j-1][len(matrix)-i-1] = matrix[len(matrix)-j-1][len(matrix)-i-1] , matrix[i][j]
+    return matrix
+
 n, k = int(input('n =')), int(input('k ='))
 
 # Создание матрицы А
@@ -39,18 +45,21 @@ print_matrix(E)
 sum_area_3 = sum([E[i][j] for i in range(n//2) for j in range(n//2) if j % 2 == 1 and E[i][j] > k])  # Область 3
 perimeter_area_2 = sum(E[0]) + sum(E[i][n//2-1] for i in range(1, n//2)) + sum(E[n//2-1]) + sum(E[i][0] for i in range(1, n//2))  # Область 2
 if sum_area_3 > perimeter_area_2:
-    E, A = A, E
+    swap_areas(B)
 else:
     B, C = C, B
 
+print('Новая матрица B:')
+print_matrix(B)
+
 # Создание матрицы F
 F = [[0 for j in range(n)] for i in range(n)]
-for i in range(n//4):
-    for j in range(n//4):
-        F[i][j] = A[i][j]  # Область 1
-        F[i][n//4+j] = B[i][j]  # Область 2
-        F[n//4+i][j] = C[i][j]  # Область 3
-        F[n//4+i][n//4+j] = D[i][j]  # Область 4
+for i in range(n//2):
+    for j in range(n//2):
+        F[i][j] = B[i][j]
+        F[i][n//2+j] = C[i][j]
+        F[n//2+i][j] = D[i][j]
+        F[n//2+i][n//2+j] = E[i][j]
 print('Матрица F:')
 print_matrix(F)
 
