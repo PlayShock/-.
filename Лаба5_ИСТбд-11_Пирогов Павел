@@ -1,0 +1,99 @@
+"""
+Задана рекуррентная функция. Область определения функции – натуральные числа.
+Написать программу сравнительного вычисления данной функции рекурсивно и итерационно.
+Определить границы применимости рекурсивного и итерационного подхода. Результаты сравнительного
+исследования времени вычисления представить в табличной и графической форме.
+F(1) = 1, F(2) = 1, F(n) = (-1)n*(F(n-2)*(n-1) /(2n)! + 2), при n > 2
+"""
+
+
+import math
+import matplotlib.pyplot as plt
+from functools import lru_cache
+import time
+
+
+@lru_cache(maxsize=32)
+def recurs_f(n):
+    if n == 1:
+        return 1
+    elif n == 2:
+        return 1
+    else:
+        x = 1
+        if n % 2 != 0:
+            x = -1
+        else:
+            x = 1
+        return x * (recurs_f(n - 2) * (n - 1) / math.factorial(2 * n) + 2)
+
+
+#n = int(input())
+#print(recurs_f(n))
+
+
+def iterat_f(n):
+    if n == 1:
+        return 1
+    elif n == 2:
+        return 1
+    else:
+        x = 1
+        f_minus_2 = 1
+        f_minus_1 = 1
+        for i in range(3, n + 1):
+            if i % 2 != 0:
+                x = -1
+            else:
+                x = 1
+            f = x * (f_minus_2 * (i - 1) / math.factorial(2 * i) + 2)
+            f_minus_2 = f_minus_1
+            f_minus_1 = f
+        return f
+
+
+#print(iterat_f(n))
+
+n = 10
+recurs_start_time = time.perf_counter()
+recurs_result = recurs_f(n)
+recurs_time = time.perf_counter() - recurs_start_time
+
+iterat_start_time = time.perf_counter()
+iterat_result = iterat_f(n)
+iterat_time = time.perf_counter() - iterat_start_time
+
+print('n', '  ', 'recurs_time', '  ', 'iterat_time')
+for n in range(1, 30):
+    recurs_start_time = time.perf_counter()
+    recurs_f(n)
+    recurs_time = time.perf_counter() - recurs_start_time
+
+    iterat_start_time = time.perf_counter()
+    iterat_f(n)
+    iterat_time = time.perf_counter() - iterat_start_time
+
+    print(n, '  ', round(recurs_time, 10), '  ', round(iterat_time, 10))
+
+
+a = list(range(1, 11))
+print(a)
+recurs_times = []
+iterat_times = []
+for n in a:
+    recurs_start_time = time.perf_counter()
+    recurs_f(n)
+    recurs_time = time.perf_counter() - recurs_start_time
+    recurs_times.append(recurs_time)
+
+    iterat_start_time = time.perf_counter()
+    iterat_f(n)
+    iterat_time = time.perf_counter() - iterat_start_time
+    iterat_times.append(iterat_time)
+
+plt.plot(a, recurs_times, label='recurs_time')
+plt.plot(a, iterat_times, label='iterat_time')
+plt.xlabel('n')
+plt.ylabel('time')
+plt.legend()
+plt.show()
