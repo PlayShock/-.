@@ -5,27 +5,28 @@
 исследования времени вычисления представить в табличной и графической форме.
 F(1) = 1, F(2) = 1, F(n) = (-1)n*(F(n-2)*(n-1) /(2n)! + 2), при n > 2
 """
-
-
-import math
 import matplotlib.pyplot as plt
-from functools import lru_cache
 import time
 
 
-@lru_cache(maxsize=32)
+def fact(n):
+    fac = 1
+    for i in range(1, n+1):
+        fac *= i
+    return float(fac)
+
+# print(fact(2*3))
+#sign = 1
 def recurs_f(n):
+    global sign
+    sign = 1
     if n == 1:
         return 1
     elif n == 2:
         return 1
     else:
-        x = 1
-        if n % 2 != 0:
-            x = -1
-        else:
-            x = 1
-        return x * (recurs_f(n - 2) * (n - 1) / math.factorial(2 * n) + 2)
+        sign *= -1
+        return sign * (recurs_f(n - 2) * (n - 1) / fact(2*n) + 2)
 
 
 #n = int(input())
@@ -33,22 +34,21 @@ def recurs_f(n):
 
 
 def iterat_f(n):
+    global sign
+    sign = 1
+    f_minus_2 = 1
+    f_minus_1 = 1
+    #global sign
     if n == 1:
         return 1
     elif n == 2:
         return 1
     else:
-        x = 1
-        f_minus_2 = 1
-        f_minus_1 = 1
+        sign *= (-1)
         for i in range(3, n + 1):
-            if i % 2 != 0:
-                x = -1
-            else:
-                x = 1
-            f = x * (f_minus_2 * (i - 1) / math.factorial(2 * i) + 2)
-            f_minus_2 = f_minus_1
-            f_minus_1 = f
+            #sign *= -1
+            f = sign * (f_minus_2 * (i - 1) / fact(2 * i) + 2)
+            f_minus_2, f_minus_1 = f_minus_1, f
         return f
 
 
