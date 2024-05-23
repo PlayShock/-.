@@ -1,0 +1,51 @@
+#Составьте все различные лексемы из букв слова «компьютер» по законам русского языка.
+
+import time
+from itertools import permutations
+
+# Алгоритм подход
+def generate_lexemes_algorithmic(word):
+    lexemes = set()
+
+    def generate(word, current_lexeme):
+        if not word:
+            lexemes.add(current_lexeme)
+            return
+        for i in range(len(word)):
+            new_lexeme = current_lexeme + word[i]
+            generate(word[:i] + word[i+1:], new_lexeme)
+
+    generate(word, '')
+    return lexemes
+
+# Подход с исп функций
+def generate_lexemes_pythonic(word):
+    lexemes = set()
+    perms = permutations(word)
+    for perm in perms:
+        lexeme = ''.join(perm)
+        lexemes.add(lexeme)
+    return lexemes
+
+word = "компьютер"
+
+# Алгоритм подход
+start_time = time.time()
+algorithmic_lexemes = generate_lexemes_algorithmic(word)
+algorithmic_execution_time = time.time() - start_time
+
+# Подход с исп функций
+start_time = time.time()
+pythonic_lexemes = generate_lexemes_pythonic(word)
+pythonic_execution_time = time.time() - start_time
+
+
+print("Алгоритмический подход:")
+#print("Лексемы:", algorithmic_lexemes)
+print("Количество лексем:", len(algorithmic_lexemes))
+print("Время выполнения:", round(algorithmic_execution_time, 10))
+
+print("\nПодход с использованием функций Python:")
+#print("Лексемы:", pythonic_lexemes)
+print("Количество лексем:", len(pythonic_lexemes))
+print("Время выполнения:", round(pythonic_execution_time, 10))
