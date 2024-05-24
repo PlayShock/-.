@@ -1,0 +1,85 @@
+import time
+from tkinter import *
+from itertools import permutations
+
+def generate_lexemes_algorithmic(word):
+    lexemes = set()
+
+    def generate(word, current_lexeme):
+        if not word:
+            if current_lexeme and current_lexeme[0] != 'ь':
+                lexemes.add(current_lexeme)
+            return
+        for i in range(len(word)):
+            new_lexeme = current_lexeme + word[i]
+            generate(word[:i] + word[i+1:], new_lexeme)
+
+    generate(word, '')
+    return lexemes
+
+def generate_lexemes_pythonic(word):
+    lexemes = set()
+    perms = permutations(word)
+    for perm in perms:
+        lexeme = ''.join(perm)
+        if lexeme and lexeme[0] != 'ь':
+            lexemes.add(lexeme)
+    return lexemes
+
+def display_result(title, lexemes, execution_time):
+    result_window = Toplevel(root)
+    result_window.title(title)
+    result_window.geometry("300x500")
+
+    lexemes_text = "\n".join(lexemes)
+    Label(result_window, text=f"Количество лексем: {len(lexemes)}").pack()
+    Label(result_window, text=f"Время выполнения: {round(execution_time, 10)} секунд").pack()
+    text_widget = Text(result_window, wrap=WORD)
+    text_widget.insert(1.0, lexemes_text)
+    text_widget.pack(expand=True, fill=BOTH)
+
+def algorithmic_approach():
+    start_time = time.time()
+    lexemes = generate_lexemes_algorithmic(word)
+    execution_time = time.time() - start_time
+    display_result("Алгоритмический подход", lexemes, execution_time)
+
+def pythonic_approach():
+    start_time = time.time()
+    lexemes = generate_lexemes_pythonic(word)
+    execution_time = time.time() - start_time
+    display_result("Функции Python", lexemes, execution_time)
+
+def run_selected_approach():
+    choice = entry.get().strip().lower()
+    if choice == "алгоритм":
+        algorithmic_approach()
+    elif choice == "функция питона":
+        pythonic_approach()
+    else:
+        error_window = Toplevel(root)
+        error_window.title("Ошибка")
+        Label(error_window, text="Введите 'Алгоритм' или 'Функция Питона'").pack()
+        error_window.geometry("250x100")
+
+word = "компьютер"
+
+root = Tk()
+root.title("Генерация лексем слова Компьютер")
+root.geometry("300x400")
+
+algorithmic_button = Button(root, text="Алгоритмический подход", command=algorithmic_approach)
+algorithmic_button.pack(pady=10)
+
+pythonic_button = Button(root, text="Функции Python", command=pythonic_approach)
+pythonic_button.pack(pady=10)
+
+Label(root, text="Введите 'Алгоритм' или 'Функция питона' \n для соответствующего окна вывода:").pack(pady=10)
+
+entry = Entry(root)
+entry.pack(pady=10)
+
+run_button = Button(root, text="Запустить", command=run_selected_approach)
+run_button.pack(pady=10)
+
+root.mainloop()
