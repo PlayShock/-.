@@ -16,10 +16,9 @@ def fact(n):
     return float(fac)
 
 # print(fact(2*3))
-#sign = 1
+sign = 1
 def recurs_f(n):
     global sign
-    sign = 1
     if n == 1:
         return 1
     elif n == 2:
@@ -32,22 +31,19 @@ def recurs_f(n):
 #n = int(input())
 #print(recurs_f(n))
 
-
+sign2 = 1
 def iterat_f(n):
-    global sign
-    sign = 1
+    global sign2
     f_minus_2 = 1
     f_minus_1 = 1
-    #global sign
     if n == 1:
         return 1
     elif n == 2:
         return 1
     else:
-        sign *= (-1)
         for i in range(3, n + 1):
-            #sign *= -1
-            f = sign * (f_minus_2 * (i - 1) / fact(2 * i) + 2)
+            sign2 *= -1
+            f = sign2 * (f_minus_2 * (i - 1) / fact(2 * i) + 2)
             f_minus_2, f_minus_1 = f_minus_1, f
         return f
 
