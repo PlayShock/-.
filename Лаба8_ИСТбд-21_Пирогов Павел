@@ -1,0 +1,88 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import matplotlib.pyplot as plt
+from collections import defaultdict
+import csv
+
+class RentalContracts:
+    def init(self, file_path=None):
+        self.contracts = []
+        self.file_path = file_path
+        self.car_types = []
+        if file_path:
+            self.load_contracts(file_path)
+    
+    def load_contracts(self, file_path):
+        self.contracts = []
+        try:
+            with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file, delimiter=',')
+                for row in reader:
+                    if len(row) == 3:
+                        contract_id, client_name, car_type = row
+                        self.contracts.append((contract_id, client_name, car_type))
+                        if car_type not in self.car_types:
+                            self.car_types.append(car_type)
+            messagebox.showinfo("Загрузка завершена", "Данные успешно загружены.")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при загрузке файла: {e}")
+
+    def segment_by_car_type(self):
+        segmentation = defaultdict(int)
+        for _, _, car_type in self.contracts:
+            segmentation[car_type] += 1
+        return segmentation
+    
+    def segment_by_clients(self):
+        segmentation = defaultdict(int)
+        for _, client_name, _ in self.contracts:
+            segmentation[client_name] += 1
+        return segmentation
+    
+    def visualize_pie_chart(self, data, title):
+        labels = data.keys()
+        sizes = data.values()
+        plt.figure(figsize=(8, 6))
+        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+        plt.title(title)
+        plt.axis('equal')
+        plt.show()
+
+class App(tk.Tk):
+    def init(self):
+        super().init()
+        self.title("Управление договорами на аренду автомобилей")
+        self.geometry("400x200")
+        self.contracts = None
+
+        self.load_button = tk.Button(self, text="Загрузить данные", command=self.load_file)
+        self.load_button.pack(pady=10)
+
+        self.segment_by_car_type_button = tk.Button(self, text="Сегментировать по видам автомобилей", command=self.segment_by_car_type)
+        self.segment_by_car_type_button.pack(pady=10)
+        
+        self.segment_by_clients_button = tk.Button(self, text="Сегментировать по клиентам", command=self.segment_by_clients)
+        self.segment_by_clients_button.pack(pady=10)
+
+    def load_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("CSV файлы", "*.csv"), ("Все файлы", "*.*")])
+        if file_path:
+            self.contracts = RentalContracts(file_path)
+    
+    def segment_by_car_type(self):
+        if self.contracts:
+            data = self.contracts.segment_by_car_type()
+            self.contracts.visualize_pie_chart(data, "Сегментация по видам автомобилей")
+        else:
+            messagebox.showwarning("Предупреждение", "Пожалуйста, загрузите данные.")
+
+    def segment_by_clients(self):
+        if self.contracts:
+            data = self.contracts.segment_by_clients()
+            self.contracts.visualize_pie_chart(data, "Сегментация по клиентам")
+        else:
+            messagebox.showwarning("Предупреждение", "Пожалуйста, загрузите данные.")
+
+if name == "main":
+    app = App()
+    app.mainloop()
