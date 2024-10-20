@@ -63,6 +63,8 @@ class RentalContracts:
         plt.axis('equal')
         plt.show()
 
+    def __repr__(self) -> str:
+        return f'{self.__dict__}'
 
 class App(tk.Tk):
     def __init__(self):
